@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - '**'
+    tags:
+      - '*'
   pull_request:
 
 jobs:
@@ -27,10 +29,14 @@ jobs:
       -
         name: Docker meta
         id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v1
+        uses: crazy-max/ghaction-docker-meta@v3
         with:
           images: ${{ steps.reponame.outputs.DOCKER_REPO }} # list of Docker images to use as base name for tags
-          tag-sha: true # add git short SHA as Docker tag
+          tags: |
+            type=semver,pattern={{major}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{version}}
+            type=sha
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
