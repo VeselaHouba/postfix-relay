@@ -29,8 +29,9 @@ ENV \
   OPENDKIM_Syslog=yes \
   OPENDKIM_InternalHosts="0.0.0.0/0, ::/0" \
   OPENDKIM_KeyTable=refile:/etc/opendkim/KeyTable \
-  OPENDKIM_SigningTable=refile:/etc/opendkim/SigningTable
-COPY rsyslog.conf /etc/rsyslog.conf
+  OPENDKIM_SigningTable=refile:/etc/opendkim/SigningTable \
+  RSYSLOG_NOTIMESTAMP=yes \
+  RSYSLOG_LOG_TO_FILE=no
 RUN mkdir -p /etc/opendkim/keys
 COPY run /root/
 VOLUME ["/var/lib/postfix", "/var/mail", "/var/spool/postfix", "/etc/opendkim/keys"]

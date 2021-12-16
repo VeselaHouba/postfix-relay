@@ -67,6 +67,23 @@ if [ ! -z "$OPENDKIM_DOMAINS" ] ; then
   service opendkim start
 fi
 service postfix start
+
+# Rsyslog base
+cat <<EOF > /etc/rsyslog.conf
+$ModLoad imuxsock
+$WorkDirectory /var/spool/rsyslog
+*.*;auth,authpriv.none /dev/stdout
+EOF
+
+if [ "${RSYSLOG_NOTIMESTAMP}" == 'yes' ] ; then
+  echo '$template noTimestampFormat,"%syslogtag%%msg%\n"' >> /etc/rsyslog.conf
+  echo '$ActionFileDefaultTemplate noTimestampFormat' >> /etc/rsyslog.conf
+fi
+
+if [ "${RSYSLOG_LOG_TO_FILE}" == 'yes' ] ; then
+  echo 'mail.* -/var/log/mail.log' >> /etc/rsyslog.conf
+fi
+
 rsyslogd -n &
 wait
 exit 0
